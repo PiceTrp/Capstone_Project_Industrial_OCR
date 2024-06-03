@@ -1,0 +1,8 @@
+{
+    "mask_size": 256,
+    "mask_created_save_dir": "./exp2_masks_increase_size",
+    "font_size": 200,
+    "fonts_dir": "./fonts",
+    "right_padding": [-20,40],
+    "bottom_padding": [0,60]
+}
