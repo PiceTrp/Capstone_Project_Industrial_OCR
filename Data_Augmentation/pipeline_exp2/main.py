@@ -28,6 +28,7 @@ def main():
     for i in range(1):
         get_character_masks(get_random_text(), config)
 
+    
 
 if __name__ == "__main__":
     main()
