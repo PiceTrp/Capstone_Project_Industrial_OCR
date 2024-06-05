@@ -34,8 +34,8 @@ def get_character_masks(text, config):
 
 def rename_result_dir(config, exp_name):
     work_dir = "C:/Users/User/Desktop/Pice/Work/ConnectedTech/UTAC_OCR/Data_Augmentation/pipeline_exp2"
-    generated_output_dir = f"{work_dir}/{config["generated_chars_dir"]}/{exp_name}"
-    renamed_dir = f"{work_dir}/{config["generated_chars_dir"]}/results"
+    generated_output_dir = f"{work_dir}/{config['generated_chars_dir']}/{exp_name}"
+    renamed_dir = f"{work_dir}/{config['generated_chars_dir']}/results"
     os.rename(generated_output_dir, renamed_dir)
 
 

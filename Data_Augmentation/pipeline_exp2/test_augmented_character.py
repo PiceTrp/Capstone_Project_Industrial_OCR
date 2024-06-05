@@ -5,6 +5,8 @@ import yaml
 from glob import glob
 import numpy as np
 import cv2
+from tqdm.notebook import tqdm
+import matplotlib.pyplot as plt
 
 from gen_characters.gen_character import get_character_masks
 from gen_augmented_image.augmented_character import AugmentedCharacterProcessor
@@ -16,26 +18,38 @@ def main():
     print("hi... config is set up")
 
     # >>> Insertion Implementation <<<
-    print(glob(os.path.join(config["generated_chars_dir"], "**", "test_latest", "*fake*").replace("\\", "/")))
-
-    fake_image_paths = sorted(glob(os.path.join(config["generated_chars_dir"], "**", "test_latest", "*fake*")))
-    mask_paths = sorted(glob(os.path.join(config["generated_chars_dir"], "**", "test_latest", "*real*")))
+    fake_image_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*fake*")))
+    mask_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*real*")))
     # bg_image = np.array(Image.open(config["background_image_path"]).convert("L"))
     print(fake_image_paths, mask_paths)
 
     augmented_characters = []
-    for fake_image_path, mask_path in zip(fake_image_paths, mask_paths):
+    for fake_image_path, mask_path in tqdm(zip(fake_image_paths, mask_paths)):
         processor = AugmentedCharacterProcessor(fake_image_path, mask_path)
         augmented_character = processor.get_augmented_character()
         augmented_characters.append(augmented_character)
 
     # Display one of the results
+    # Display the augmented characters using Matplotlib
     augmented_character = augmented_characters[0]
-    cv2.imshow("Fake Image", augmented_character["fake_image"])
-    cv2.imshow("Binary Mask", augmented_character["bw_mask"])
-    cv2.imshow("Masked Image", augmented_character["masked"])
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 3, 1)
+    plt.imshow(augmented_character["fake_image"])
+    plt.title("Fake Image")
+    plt.axis("off")
+
+    plt.subplot(1, 3, 2)
+    plt.imshow(augmented_character["bw_mask"], cmap="gray")
+    plt.title("Binary Mask")
+    plt.axis("off")
+
+    plt.subplot(1, 3, 3)
+    plt.imshow(augmented_character["masked"])
+    plt.title("Masked Image")
+    plt.axis("off")
+
+    plt.show()
     
 
 
