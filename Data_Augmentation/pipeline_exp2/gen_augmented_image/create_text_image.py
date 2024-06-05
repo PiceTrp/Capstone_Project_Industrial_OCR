@@ -62,7 +62,7 @@ class TextBoxProcessor:
         """
         Output the merged characters to be a single text box containing the characters.
         """
-        text_box_w, text_box_h = self.get_text_box_size(total_char=len(self.augmented_characters))
+        text_box_w, text_box_h = self.get_text_box_size()
         text_box_image = np.zeros((text_box_h, text_box_w, 3), dtype=np.uint8)
         text_box_masked = text_box_image.copy()
         text_box_bw_mask = text_box_image.copy()
