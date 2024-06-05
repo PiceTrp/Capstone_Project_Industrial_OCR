@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 # I have learned that when we call function inside a class, we don't need to pass "self" again
 

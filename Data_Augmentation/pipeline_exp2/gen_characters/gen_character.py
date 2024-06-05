@@ -23,11 +23,20 @@ def get_character_masks(text, config):
 
     # run the test script to get stylized result images
     run_test_script(config, exp_name, mask_size, len(characters))
-    
+
+    # rename for unified/single one result output - config['generated_chars_image_dir']
+    rename_result_dir(config, exp_name)
+
     # remove existing used images in dataset - testB
     for i in glob(os.path.join(config["mask_created_save_dir"], "*")):
         os.remove(i)
 
+
+def rename_result_dir(config, exp_name):
+    work_dir = "C:/Users/User/Desktop/Pice/Work/ConnectedTech/UTAC_OCR/Data_Augmentation/pipeline_exp2"
+    generated_output_dir = f"{work_dir}/{config["generated_chars_dir"]}/{exp_name}"
+    renamed_dir = f"{work_dir}/{config["generated_chars_dir"]}/results"
+    os.rename(generated_output_dir, renamed_dir)
 
 
 def run_test_script(config, exp_name, mask_size, num_characters):

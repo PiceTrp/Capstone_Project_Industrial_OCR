@@ -12,5 +12,6 @@ bottom_padding_range: [0,60] # candidate bottom padding size
 
 
 # --------- gen text box parts ---------
+generated_chars_image_dir: "gen_characters/generated_chars/results" # rename from exp_name to results at gen_charater.py
 fake_image_dir: "gen_characters/fake_images" # Directory for fake images - masked output
 mask_image_dir: "gen_characters/mask_images" # Directory for mask images - binary mask
