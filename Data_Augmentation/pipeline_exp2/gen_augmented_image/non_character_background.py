@@ -2,7 +2,7 @@ import cv2
 
 # I have learned that when we call function inside a class, we don't need to pass "self" again
 
-class NonCharacterBackground:
+class NonCharacterBackgroundProcessor:
     """
     A class for preprocessing background image to get placable insert area
     for placing generated characters.
