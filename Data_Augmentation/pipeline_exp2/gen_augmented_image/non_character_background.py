@@ -12,7 +12,9 @@ class NonCharacterBackgroundProcessor:
         self.image = cv2.imread(image_path)
         self.combined_mask = self.get_combined_mask()
         self.leftmost, self.rightmost = self._find_left_right_most()
-        self.top_left, self.bottom_right = self._find_placable_coordinates
+        self.background_image = self.get_cropped_background()
+        self.insertion_mask = self.get_cropped_combined_mask()
+        self.placable_topleft, self.placable_bottomright = self._find_placable_coordinates()
 
 
     def _otsu_thresholding(self, gray_image):
@@ -29,9 +31,10 @@ class NonCharacterBackgroundProcessor:
     def _get_bounding_rectangle(self, largest_contour):
         """
         This is to get encapsulated rectangle - the rectangle that encapsulates the largest contour
-        y + 20 because we will left space for top border to perform UNION operation with
+        - y + 20 because we will left space for top border to perform UNION operation with
         the largest contour or else there might remove some part of the roughness region
         of the top metal surface.
+        - No transform on y-axis for the background image, so need to keep adding that y
         """
         x, y, w, h = cv2.boundingRect(largest_contour)
         adjusted_y = max(y + 20, 0)
@@ -88,21 +91,19 @@ class NonCharacterBackgroundProcessor:
 
     def get_cropped_combined_mask(self):
         # Resize the combined mask to match the cropped image size
-        cropped_combined_mask = self.combined_mask[:, self.leftmost:self.rightmost+1]
+        insertion_mask = self.combined_mask[:, self.leftmost:self.rightmost+1]
         # To be 2d array as a mask
-        cropped_combined_mask = cv2.cvtColor(cropped_combined_mask, cv2.COLOR_BGR2GRAY)
-        return cropped_combined_mask
-    
+        insertion_mask = cv2.cvtColor(insertion_mask, cv2.COLOR_BGR2GRAY)
+        return insertion_mask
 
-    def _find_placable_coordinates(self, mask):
+
+    def _find_placable_coordinates(self):
         """
-        Input: cropped_combined_mask (Non-character Background mask after remove left right)
+        Input: insertion_mask (Non-character Background mask after remove left right)
         Output: top-left & bottom-right of mask insertion area
-        Obj: to return coordinates of the mask insertion area for placing text box containing fake characters
-        Step: thresholding + find largest contour + get coordinates
         """
         # Find the largest contour by sorting contours based on area
-        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(self.insertion_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         largest_contour = max(contours, key=cv2.contourArea)
 
         # Find the rectangle that encapsulate the largest contour = Mask Insertion Area

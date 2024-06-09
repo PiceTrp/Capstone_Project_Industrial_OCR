@@ -58,7 +58,7 @@ def main():
         # print(os.getcwd())
         # print(config['generated_chars_dir'])
         # print(os.path.join(os.getcwd(), config['generated_chars_dir']))
-        shutil.rmtree(config['generated_chars_dir'])
+        # shutil.rmtree(config['generated_chars_dir'])
 
     # plt.figure(figsize=(10, 5))
     # plt.subplot(1, 2, 1)
