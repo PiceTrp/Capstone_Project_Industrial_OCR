@@ -35,43 +35,41 @@ def main():
         config = yaml.safe_load(file)
     print("hi... config is set up")
 
-    for i in range(10):
-        # create mask
-        get_character_masks(get_random_text(), config)
+    # create mask
+    get_character_masks(get_random_text(), config)
 
-        # >>> Insertion Implementation <<<
-        fake_image_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*fake*")))
-        mask_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*real*")))
-        # bg_image = np.array(Image.open(config["background_image_path"]).convert("L"))
+    # >>> Insertion Implementation <<<
+    fake_image_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*fake*")))
+    mask_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*real*")))
 
-        augmented_characters = []
-        for fake_image_path, mask_path in tqdm(zip(fake_image_paths, mask_paths)):
-            processor = AugmentedCharacterProcessor(fake_image_path, mask_path)
-            augmented_character = processor.get_augmented_character()
-            augmented_characters.append(augmented_character)
+    augmented_characters = []
+    for fake_image_path, mask_path in tqdm(zip(fake_image_paths, mask_paths)):
+        processor = AugmentedCharacterProcessor(fake_image_path, mask_path)
+        augmented_character = processor.get_augmented_character()
+        augmented_characters.append(augmented_character)
 
-        #Create text box
-        processor = TextBoxProcessor(augmented_characters, char_padding=120)
-        text_box_masked, text_box_bw_mask = processor.create_text_box()
+    #Create text box
+    text_box_processor = TextBoxProcessor(augmented_characters, char_padding=120)
+    text_box_masked, text_box_bw_mask = text_box_processor.text_box_masked, text_box_processor.text_box_bw_mask
 
-        # tempolary
-        # print(os.getcwd())
-        # print(config['generated_chars_dir'])
-        # print(os.path.join(os.getcwd(), config['generated_chars_dir']))
-        # shutil.rmtree(config['generated_chars_dir'])
+    # tempolary
+    # print(os.getcwd())
+    # print(config['generated_chars_dir'])
+    # print(os.path.join(os.getcwd(), config['generated_chars_dir']))
+    shutil.rmtree(config['generated_chars_dir'])
 
-    # plt.figure(figsize=(10, 5))
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(text_box_masked)
-    # plt.title("Text Box Image")
-    # plt.axis("off")
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.imshow(text_box_masked)
+    plt.title("Text Box Image")
+    plt.axis("off")
 
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(text_box_bw_mask, cmap="gray")
-    # plt.title("Binary Mask")
-    # plt.axis("off")
+    plt.subplot(1, 2, 2)
+    plt.imshow(text_box_bw_mask, cmap="gray")
+    plt.title("Binary Mask")
+    plt.axis("off")
 
-    # plt.show()
+    plt.show()
     
 
 

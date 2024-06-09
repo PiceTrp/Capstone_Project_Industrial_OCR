@@ -5,6 +5,7 @@ class TextBoxProcessor:
     def __init__(self, augmented_characters, char_padding):
         self.augmented_characters = augmented_characters
         self.char_padding = char_padding
+        self.text_box_masked, self.text_box_bw_mask = self.create_text_box()
 
     def get_text_box_size(self):
         """

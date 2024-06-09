@@ -4,9 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class ImageOverlay:
+class Insertion:
     def __init__(self, background_image, text_box_masked, text_box_bw_mask, overlay_value=20):
-        self.bg = background_image.copy()
+        self.background_image = background_image.copy()
         self.object_img = text_box_masked.copy()
         self.object_img_mask = text_box_bw_mask.copy()
         self.overlay_value = overlay_value
@@ -19,8 +19,8 @@ class ImageOverlay:
         # plus-minus 30 to let's object missing some part for augmentation purpose
         placable_width = (x1, x2-w)
         placable_height = (y1, y2-h)
-        random_width_range = (placable_width[0] - overlay_value, placable_width[1] + overlay_value)
-        random_height_range = (placable_height[0] - overlay_value, placable_height[1] + overlay_value)
+        random_width_range = (placable_width[0] - self.overlay_value, placable_width[1] + self.overlay_value)
+        random_height_range = (placable_height[0] - self.overlay_value, placable_height[1] + self.overlay_value)
 
         # get random top-left coordinates
         random_x = random.randint(random_width_range[0], random_width_range[1])

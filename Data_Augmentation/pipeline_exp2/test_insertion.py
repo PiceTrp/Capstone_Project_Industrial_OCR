@@ -23,6 +23,7 @@ def main():
     # >>> Insertion Implementation <<<
     fake_image_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*fake*")))
     mask_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*real*")))
+    background_images = sorted(glob(os.path.join(config['background_dir'], "*.png")))
 
     augmented_characters = []
     for fake_image_path, mask_path in tqdm(zip(fake_image_paths, mask_paths)):
@@ -30,8 +31,11 @@ def main():
         augmented_character = processor.get_augmented_character()
         augmented_characters.append(augmented_character)
 
+    #Create text box
+    text_box_processor = TextBoxProcessor(augmented_characters, char_padding=30)
+    text_box_masked, text_box_bw_mask = text_box_processor.create_text_box()
+
     # Create an instance of the NonCharacterBackground class
-    background_images = sorted(glob(os.path.join(config['background_dir'], "*.png")))
     background_processor = NonCharacterBackgroundProcessor(background_images[2])
 
     # get backgroun image and its insertion mask
@@ -41,6 +45,11 @@ def main():
     # get top-left & bottom-right of mask insertion area
     placable_topleft, placable_bottomright = background_processor.placable_topleft, background_processor.placable_bottomright
     print(placable_topleft, placable_bottomright)
+
+    # test insertion
+
+
+
 
     # for the end of everything
     shutil.rmtree(config['generated_chars_dir'])
