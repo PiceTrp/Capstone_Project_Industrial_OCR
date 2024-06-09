@@ -9,6 +9,7 @@ from gen_characters.gen_character import get_character_masks
 from gen_augmented_image.augmented_character import AugmentedCharacterProcessor
 from gen_augmented_image.create_text_image import TextBoxProcessor
 from gen_augmented_image.non_character_background import NonCharacterBackgroundProcessor
+from gen_augmented_image.insertion import Insertion
 from gen_augmented_image.utils import *
 
 def main():
@@ -31,50 +32,42 @@ def main():
         augmented_character = processor.get_augmented_character()
         augmented_characters.append(augmented_character)
 
-    #Create text box
-    text_box_processor = TextBoxProcessor(augmented_characters, char_padding=30)
-    text_box_masked, text_box_bw_mask = text_box_processor.create_text_box()
-
     # Create an instance of the NonCharacterBackground class
     background_processor = NonCharacterBackgroundProcessor(background_images[2])
-
-    # get backgroun image and its insertion mask
-    background_image = background_processor.background_image
-    insertion_mask = background_processor.insertion_mask
-
-    # get top-left & bottom-right of mask insertion area
-    placable_topleft, placable_bottomright = background_processor.placable_topleft, background_processor.placable_bottomright
-    print(placable_topleft, placable_bottomright)
+    # Create text box
+    text_box_processor = TextBoxProcessor(augmented_characters, char_padding=30)
+    overlay_value = 20
 
     # test insertion
-
-
-
+    insertion_processor = Insertion(background_processor, text_box_processor, overlay_value)
+    result_image = insertion_processor.implement_insertion(visualize=True)
+    plt.imshow(result_image)
+    plt.show()
 
     # for the end of everything
     shutil.rmtree(config['generated_chars_dir'])
 
     
-    plt.figure(figsize=(10, 5))
-    plt.subplot(1, 3, 1)
-    plt.imshow(background_image)
-    plt.title("BG Image")
-    plt.axis("off")
+    # plt.figure(figsize=(10, 5))
+    # plt.subplot(1, 3, 1)
+    # plt.imshow(background_image)
+    # plt.title("BG Image")
+    # plt.axis("off")
 
-    plt.subplot(1, 3, 2)
-    plt.imshow(insertion_mask, cmap="gray")
-    plt.title("Binary Mask")
-    plt.axis("off")
+    # plt.subplot(1, 3, 2)
+    # plt.imshow(insertion_mask, cmap="gray")
+    # plt.title("Binary Mask")
+    # plt.axis("off")
 
-    bg_copy = np.zeros(background_image.shape, dtype=np.uint8)
-    cv2.line(bg_copy, (0, placable_topleft[1]), (bg_copy.shape[1], placable_topleft[1]), (12, 242, 223), 10)
-    cv2.line(bg_copy, (0, placable_bottomright[1]), (bg_copy.shape[1], placable_bottomright[1]), (12, 242, 223), 10)
-    plt.subplot(1, 3, 3)
-    plt.imshow(bg_copy)
-    plt.title("placable coordinates")
-    plt.axis("off")
+    # bg_copy = np.zeros(background_image.shape, dtype=np.uint8)
+    # cv2.line(bg_copy, (0, placable_topleft[1]), (bg_copy.shape[1], placable_topleft[1]), (12, 242, 223), 10)
+    # cv2.line(bg_copy, (0, placable_bottomright[1]), (bg_copy.shape[1], placable_bottomright[1]), (12, 242, 223), 10)
+    # plt.subplot(1, 3, 3)
+    # plt.imshow(bg_copy)
+    # plt.title("placable coordinates")
+    # plt.axis("off")
 
-    plt.show()
+    # plt.show()
     
 
 
