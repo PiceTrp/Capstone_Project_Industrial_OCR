@@ -6,7 +6,6 @@ from gen_characters.gen_character import get_character_masks
 
 # Add the path to the directory containing test.py
 sys.path.append(os.path.abspath('../../Background_Removal/pytorch-CycleGAN-and-pix2pix'))
-import test
 
 def get_random_text():
     first_position = "0123456789"
@@ -25,7 +24,7 @@ def main():
         config = yaml.safe_load(file)
     print("hi... config is set up")
 
-    for i in range(1):
+    for i in range(3):
         get_character_masks(get_random_text(), config)
 
     

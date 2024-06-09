@@ -12,6 +12,7 @@ class NonCharacterBackgroundProcessor:
         self.image = cv2.imread(image_path)
         self.combined_mask = self.get_combined_mask()
         self.leftmost, self.rightmost = self._find_left_right_most()
+        self.top_left, self.bottom_right = self._find_placable_coordinates
 
 
     def _otsu_thresholding(self, gray_image):
@@ -74,6 +75,11 @@ class NonCharacterBackgroundProcessor:
         return combined_mask
 
 
+    """
+    these 2 functions below are to remove gray color value of left-right corner of the original image
+    since we want to get rid of unwanted part resulting from applying perspective transform 
+    to get the text image
+    """
     def get_cropped_background(self):
         # Crop the original image based on the mask dimensions
         cropped_image = self.image[:, self.leftmost:self.rightmost+1]
@@ -86,3 +92,24 @@ class NonCharacterBackgroundProcessor:
         # To be 2d array as a mask
         cropped_combined_mask = cv2.cvtColor(cropped_combined_mask, cv2.COLOR_BGR2GRAY)
         return cropped_combined_mask
+    
+
+    def _find_placable_coordinates(self, mask):
+        """
+        Input: cropped_combined_mask (Non-character Background mask after remove left right)
+        Output: top-left & bottom-right of mask insertion area
+        Obj: to return coordinates of the mask insertion area for placing text box containing fake characters
+        Step: thresholding + find largest contour + get coordinates
+        """
+        # Find the largest contour by sorting contours based on area
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        largest_contour = max(contours, key=cv2.contourArea)
+
+        # Find the rectangle that encapsulate the largest contour = Mask Insertion Area
+        x, y, w, h = cv2.boundingRect(largest_contour)
+        bounding_rect_contour = np.array([[x, y], [x + w, y], [x + w, y + h], [x, y + h]], dtype=np.int32)
+
+        # get top-left & bottom-right of mask insertion area
+        placable_topleft = bounding_rect_contour[0]
+        placable_bottomright = bounding_rect_contour[2]
+        return placable_topleft, placable_bottomright

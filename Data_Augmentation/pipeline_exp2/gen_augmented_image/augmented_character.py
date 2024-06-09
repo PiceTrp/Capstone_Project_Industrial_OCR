@@ -14,9 +14,9 @@ class AugmentedCharacterProcessor:
         _, thresh_mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # Apply morphological dilation to make the mask bigger to cover more detail of the fake image result
-        # kernel = np.ones((5, 5), np.uint8)
-        # dilated_mask = cv2.dilate(thresh_mask, kernel, iterations=3)
-        return thresh_mask
+        kernel = np.ones((5, 5), np.uint8)
+        dilated_mask = cv2.dilate(thresh_mask, kernel, iterations=1)
+        return dilated_mask
 
     @staticmethod
     def get_encapsulate_box(dilated_mask):
@@ -32,3 +32,5 @@ class AugmentedCharacterProcessor:
         # result in dictionary
         augmented_character = {"fake_image": fake_image, "bw_mask": mask, "masked": masked, "encapsulate_bbox": [x, y, w, h]}
         return augmented_character
+
+# we should transform each character distinctly

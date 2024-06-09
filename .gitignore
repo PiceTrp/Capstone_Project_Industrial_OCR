@@ -58,3 +58,5 @@ font_families
 __pycache__
 *.log
 *.tmp
+*.png
+*.jpg

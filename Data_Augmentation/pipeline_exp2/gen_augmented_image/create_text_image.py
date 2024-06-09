@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 class TextBoxProcessor:
-    def __init__(self, augmented_characters, char_padding=30):
+    def __init__(self, augmented_characters, char_padding):
         self.augmented_characters = augmented_characters
         self.char_padding = char_padding
 
