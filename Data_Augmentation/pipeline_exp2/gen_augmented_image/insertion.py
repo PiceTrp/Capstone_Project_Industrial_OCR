@@ -21,22 +21,24 @@ class Insertion:
                             "text_box_bw_mask": self.object_mask}
 
 
-    def implement_insertion(self, visualize=False):
+    def implement_insertion(self, visualize=False, verbose=False):
         random_x, random_y = self.get_random_coordinate()
-        random_alpha = self.get_random_alpha_value() + 0.2
-        print(f"(x,y) = {random_x}, {random_y}")
-        print(f"Alpha value = {random_alpha}")
+        random_alpha = self.get_random_alpha_value()
 
-        print(f"background_image : {self.background_image.shape}")
-        print(f"insertion_mask : {self.insertion_mask.shape}")
-        print(f"object_img: {self.object_img.shape}")
-        print(f"object_mask: {self.object_mask.shape}")
+        if verbose:
+            print(f"Random selected coordinates (x,y) = ({random_x},{random_y})")
+            print(f"Alpha value = {random_alpha}")
+            print(f"background_image : {self.background_image.shape}")
+            print(f"insertion_mask : {self.insertion_mask.shape}")
+            print(f"object_img: {self.object_img.shape}")
+            print(f"object_mask: {self.object_mask.shape}")
 
         # get insert result of text_box_image, text_box_mask at (x,y). same size as background image
         text_box_image, text_box_mask = self.get_inserted_object_and_mask(random_x, random_y, visualize)
 
-        print(f"text_box_image: {text_box_image.shape}")
-        print(f"text_box_mask: {text_box_mask.shape}")
+        if verbose:
+            print(f"text_box_image: {text_box_image.shape}")
+            print(f"text_box_mask: {text_box_mask.shape}")
 
         # get text_box_image, text_box_mask only part that intersect with background insertion_mask
         intersect_object_img, intersect_object_mask = self.intersect_insert_region(insert_region=self.insertion_mask,
@@ -59,6 +61,10 @@ class Insertion:
 
 
     def get_random_coordinate(self):
+        """
+        random coordinates of placable range which is in area of insertion_mask
+        can add overlay_value for out-of-range insertion
+        """
         x1,y1 = self.placable_topleft
         x2,y2 = self.placable_bottomright
         h, w = self.object_img.shape[:-1]
@@ -72,14 +78,11 @@ class Insertion:
         # get random top-left coordinates
         random_x = random.randint(random_width_range[0], random_width_range[1])
         random_y = random.randint(random_height_range[0], random_height_range[1])
-
-        # show coordinates
-        print(f"Random selected coordinates (x,y) = ({random_x},{random_y})")
         return (random_x, random_y)
     
 
     def get_random_alpha_value(self):
-        return random.uniform(0.3, 0.9)
+        return random.uniform(0.3, 0.8)
     
 
     def _place_object(self, background, object_img, object_mask, x, y):
@@ -92,9 +95,10 @@ class Insertion:
         mask_boolean = mask[:,:,0] == 255 # white
         mask_rgb_boolean = np.stack([mask_boolean, mask_boolean, mask_boolean], axis=2)
 
-        print(f"mask: {mask.shape}")
-        print(f"mask_boolean: {mask_boolean.shape}")
-        print(f"mask_rgb_boolean: {mask_rgb_boolean.shape}")
+        # for debugging
+        # print(f"mask: {mask.shape}")
+        # print(f"mask_boolean: {mask_boolean.shape}")
+        # print(f"mask_rgb_boolean: {mask_rgb_boolean.shape}")
 
         # Add image for the visible part of object image
         if x >= 0 and y >= 0:
@@ -146,8 +150,9 @@ class Insertion:
         bg_mask = np.zeros(self.background_image.shape[:2])
         bg_rgb_mask = np.zeros(self.background_image.shape, dtype=np.uint8) # don't forget dtype
 
-        print(f"bg_mask: {bg_mask.shape}")
-        print(f"bg_rgb_mask: {bg_rgb_mask.shape}")
+        # for debugging
+        # print(f"bg_mask: {bg_mask.shape}")
+        # print(f"bg_rgb_mask: {bg_rgb_mask.shape}")
 
         # Place image for the visible part of object image
         self._place_object(bg_mask, self.object_img, self.object_mask, x, y) # for 2d mask - inserted_mask
