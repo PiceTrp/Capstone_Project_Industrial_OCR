@@ -61,11 +61,11 @@ def main():
         try:
             # test insertion
             insertion_processor = Insertion(background_processor, text_box_processor)
-            result_image = insertion_processor.implement_insertion(verbose=True)
+            result_image = insertion_processor.implement_insertion(visualize=True, verbose=True)
 
             # save for checking
             img_pil = Image.fromarray(result_image.astype(np.uint8))
-            img_pil.save(f"./result_{i}.png", quality=95)
+            img_pil.save(f"./result_{i}.png", quality=100)
         except Exception as e:
             print("An error occurred:", e)
 

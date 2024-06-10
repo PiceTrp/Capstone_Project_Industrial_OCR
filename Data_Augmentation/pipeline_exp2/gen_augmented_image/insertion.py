@@ -2,6 +2,7 @@ import random
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import albumentations as A
 
 
 class Insertion:
@@ -15,6 +16,14 @@ class Insertion:
         self.object_img = text_box_processor.text_box_masked
         self.object_mask = text_box_processor.text_box_bw_mask
         self.overlay_value = overlay_value
+
+        # for better blending result
+        self.transform_effect = A.Compose([
+            A.Rotate(limit=2, p=0.2), # Rotate between -2 and 2 degrees
+            A.Blur(blur_limit=5, p=0.2), # blur_limit = kernel = [3, blur_limit]
+            A.GaussNoise(var_limit=(10.0, 50.0), per_channel=False, p=0.2), # per_channel=False = The same noise value on all channels > R, G, B value
+        ])
+
         # for plot
         self.plot_images = {"background_image": self.background_image,
                             "insertion_mask": self.insertion_mask,
@@ -53,12 +62,15 @@ class Insertion:
                                     transparency=random_alpha,
                                     visualize=visualize)
         
+        # transform some blur or noise for smooth blending
+        result_image = self.get_transform_result(blended)
+        
         # plot
         if visualize:
-            self.plot_images['result_image'] = blended
+            self.plot_images['result_image'] = result_image
             self.plot_all_steps()
 
-        return blended
+        return result_image
 
 
     # !!!! This function can have error if text box size is larger than background size !!!!
@@ -232,8 +244,17 @@ class Insertion:
         if visualize:
             self.plot_images['foreground'] = foreground
             self.plot_images['background'] = background
+            self.plot_images['blended'] = blended
             # self.plot_alpha_blending(foreground, background)
         return blended
+    
+
+    # Albumentation
+    def get_transform_result(self, image):
+        # blur or noise for smooth final result
+        transformed = self.transform_effect(image=image)
+        transformed_image = transformed['image']
+        return transformed_image# final augmented result
     
 
     # ----- for visualization ------
