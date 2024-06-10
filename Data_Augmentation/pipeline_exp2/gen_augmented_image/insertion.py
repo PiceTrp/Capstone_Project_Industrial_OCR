@@ -96,7 +96,7 @@ class Insertion:
     
 
     def get_random_alpha_value(self):
-        return random.uniform(0.3, 0.8)
+        return random.uniform(0.3, 0.7)
     
 
     def _place_object(self, background, object_img, object_mask, x, y):
