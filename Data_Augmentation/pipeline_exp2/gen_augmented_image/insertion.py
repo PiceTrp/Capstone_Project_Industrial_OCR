@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import albumentations as A
 
+random.seed(42)
 
 class Insertion:
     # fix overlay-value to be +- 40
@@ -98,7 +99,7 @@ class Insertion:
     
 
     def get_random_alpha_value(self):
-        return random.uniform(0.3, 0.7)
+        return random.uniform(0.3, 0.9)
     
 
     def _place_object(self, background, object_img, object_mask, x, y):
