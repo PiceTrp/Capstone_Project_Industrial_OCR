@@ -6,7 +6,7 @@ generated_chars_dir: "gen_characters/generated_chars" # CycleGan result director
 checkpoints_dir: "resources/checkpoints"
 exp_names: ["font_generation_set2_k4_cluster1", "font_generation_set2_k4_cluster2", "font_generation_set2_k4_cluster3", "font_generation_set2_k4_cluster4"]
 fonts_dir: "resources/font_families" # Path to font family file
-candidate_mask_sizes: [384, 400, 416, 432] # candidate font size - mask_size_list 352, 368,
+candidate_mask_sizes: [320, 336, 352, 384, 400] # candidate font size - mask_size_list 352, 368,
 right_padding_range: [-20,40] # candidate right paddig size
 bottom_padding_range: [0,60] # candidate bottom padding size
 

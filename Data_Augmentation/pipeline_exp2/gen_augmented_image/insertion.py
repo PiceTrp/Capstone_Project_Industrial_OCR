@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 
 
 class Insertion:
-    def __init__(self, background_processor, text_box_processor, overlay_value=20):
+    # fix overlay-value to be +- 40
+    def __init__(self, background_processor, text_box_processor, overlay_value=40):
         # background initiate
         self.background_image = background_processor.background_image
         self.insertion_mask = background_processor.insertion_mask
