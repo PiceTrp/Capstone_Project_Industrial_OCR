@@ -61,6 +61,7 @@ class Insertion:
         return blended
 
 
+    # !!!! This function can have error if text box size is larger than background size !!!!
     def get_random_coordinate(self):
         """
         random coordinates of placable range which is in area of insertion_mask

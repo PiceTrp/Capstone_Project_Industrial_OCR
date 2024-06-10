@@ -124,19 +124,31 @@ class NonCharacterBackgroundProcessor:
 
     # Albumentation
     def get_transform_result(self):
-        # augment position first
+        # 1st transform - augment position first
         transformed_1 = self.transform_position(image=self.cropped_background, mask=self.cropped_combined_mask)
         transformed_image = transformed_1['image']
         transformed_mask = transformed_1['mask']
 
-        # then augment color value - brightness contrast blur noise - for only background image, don't involved mask
+        # 2nd transform - augment color value - brightness contrast blur noise - for only background image, don't involved mask
         transformed_2 = self.transform_effect(image=transformed_image)
         transformed_image_2 = transformed_2['image']
 
         # ensure mask is only 0 and 255
         transformed_mask[transformed_mask > 0] = 255
 
+        # ensure largest contour is the insertion mask
+        transformed_mask = self.ensure_largest_contour_mask(transformed_mask)
+
         return transformed_image_2, transformed_mask # final background_image & insertion_mask
+    
+
+    def ensure_largest_contour_mask(self, binary_image):
+        contours, hierarchy = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        largest_contour = max(contours, key=cv2.contourArea)
+        # Create a new binary mask for the largest contour
+        mask = np.zeros_like(binary_image)
+        cv2.drawContours(mask, [largest_contour], 0, (255), -1)
+        return mask
     
 
     def _find_placable_coordinates(self):
