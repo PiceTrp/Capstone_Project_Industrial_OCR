@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import albumentations as A
 
 # I have learned that when we call function inside a class, we don't need to pass "self" again
 
@@ -9,11 +10,35 @@ class NonCharacterBackgroundProcessor:
     for placing generated characters.
     """
     def __init__(self, image_path):
-        self.image = cv2.imread(image_path)
-        self.combined_mask = self.get_combined_mask()
+        self.image = cv2.imread(image_path) # original background image
+        self.combined_mask = self.get_combined_mask() # placable region
         self.leftmost, self.rightmost = self._find_left_right_most()
-        self.background_image = self.get_cropped_background()
-        self.insertion_mask = self.get_cropped_combined_mask()
+        self.cropped_background = self.get_cropped_background()
+        self.cropped_combined_mask = self.get_cropped_combined_mask()
+
+        # apply albumentation
+        self.transform_position = A.Compose([
+            A.HorizontalFlip(p=0.5),
+            A.RandomScale(scale_limit=0.05, p=0.2), # Scale between 95% and 105% of original size
+            A.Rotate(limit=2, p=0.2),               # Rotate between -2 and 2 degrees
+            # For translate on x-asix only
+            A.ShiftScaleRotate(
+                shift_limit_x=0.3,  # Shift up to 30% of the image width along the x-axis
+                shift_limit_y=0.0,  # No shift along y-axis
+                scale_limit=0,      # No apply, already applied above
+                rotate_limit=0,     # No apply, already applied above
+                p=0.7,
+            ),
+        ])
+        self.transform_effect = A.Compose([
+            A.RandomBrightness(limit=0.15, p=0.5),  # ±15% change in brightness
+            A.RandomContrast(limit=0.1, p=0.2),    # ±10% change in contrast
+            A.Blur(blur_limit=5, p=0.2), # blur_limit = kernel = [3, blur_limit]
+            A.GaussNoise(var_limit=(10.0, 50.0), per_channel=False, p=0.2), # per_channel=False = The same noise value on all channels > R, G, B value
+        ])
+
+        # final result after all background implementation steps
+        self.background_image, self.insertion_mask = self.get_transform_result()
         self.placable_topleft, self.placable_bottomright = self._find_placable_coordinates()
 
 
@@ -91,11 +116,24 @@ class NonCharacterBackgroundProcessor:
 
     def get_cropped_combined_mask(self):
         # Resize the combined mask to match the cropped image size
-        insertion_mask = self.combined_mask[:, self.leftmost:self.rightmost+1]
+        cropped_combined_mask = self.combined_mask[:, self.leftmost:self.rightmost+1]
         # To be 2d array as a mask
-        insertion_mask = cv2.cvtColor(insertion_mask, cv2.COLOR_BGR2GRAY)
-        return insertion_mask
+        cropped_combined_mask = cv2.cvtColor(cropped_combined_mask, cv2.COLOR_BGR2GRAY)
+        return cropped_combined_mask
+    
 
+    # Albumentation
+    def get_transform_result(self):
+        # augment position first
+        transformed_1 = self.transform_position(image=self.cropped_background, mask=self.cropped_combined_mask)
+        transformed_image = transformed_1['image']
+        transformed_mask = transformed_1['mask']
+
+        # then augment color value - brightness contrast blur noise - for only background image, don't involved mask
+        transformed_2 = self.transform_effect(image=transformed_image)
+        transformed_image_2 = transformed_2['image']
+        return transformed_image_2, transformed_mask # final background_image & insertion_mask
+    
 
     def _find_placable_coordinates(self):
         """
