@@ -19,7 +19,7 @@ def main():
     print("hi... config is set up")
 
     # >>> Character Creation <<<
-    get_character_masks("8A107", config)
+    get_character_masks("9P027", config)
 
     # >>> Insertion Implementation <<<
     fake_image_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*fake*")))
@@ -35,17 +35,19 @@ def main():
     # Create an instance of the NonCharacterBackground class
     background_processor = NonCharacterBackgroundProcessor(background_images[2])
     # Create text box
-    text_box_processor = TextBoxProcessor(augmented_characters, char_padding=30)
+    text_box_processor = TextBoxProcessor(augmented_characters, char_padding=120)
     overlay_value = 20
-
-    print(f"Backgrond Insertion mask shape: {background_processor.insertion_mask.shape}")
-    print(f"Backgrond Insertion mask shape: {background_processor.insertion_mask.shape}")
 
     # test insertion
     insertion_processor = Insertion(background_processor, text_box_processor, overlay_value)
     result_image = insertion_processor.implement_insertion(visualize=True)
+    plt.figure(figsize=(20,10))
     plt.imshow(result_image)
     plt.show()
+
+    # save for checking
+    img_pil = Image.fromarray(result_image.astype(np.uint8))
+    img_pil.save('./result.png', quality=95)
 
     # for the end of everything
     shutil.rmtree(config['generated_chars_dir'])

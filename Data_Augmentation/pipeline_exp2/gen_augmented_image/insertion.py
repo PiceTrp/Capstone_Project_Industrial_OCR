@@ -7,34 +7,54 @@ import matplotlib.pyplot as plt
 class Insertion:
     def __init__(self, background_processor, text_box_processor, overlay_value=20):
         # background initiate
-        self.background_image = background_processor.background_image.copy()
-        self.insertion_mask = background_processor.insertion_mask.copy()
+        self.background_image = background_processor.background_image
+        self.insertion_mask = background_processor.insertion_mask
         self.placable_topleft, self.placable_bottomright = background_processor.placable_topleft, background_processor.placable_bottomright
         # text box initiate
-        self.object_img = text_box_processor.text_box_masked.copy()
-        self.object_mask = text_box_processor.text_box_bw_mask.copy()
+        self.object_img = text_box_processor.text_box_masked
+        self.object_mask = text_box_processor.text_box_bw_mask
         self.overlay_value = overlay_value
+        # for plot
+        self.plot_images = {"background_image": self.background_image,
+                            "insertion_mask": self.insertion_mask,
+                            "text_box_masked": self.object_img,
+                            "text_box_bw_mask": self.object_mask}
 
 
     def implement_insertion(self, visualize=False):
         random_x, random_y = self.get_random_coordinate()
-        random_alpha = self.get_random_alpha_value()
+        random_alpha = self.get_random_alpha_value() + 0.2
         print(f"(x,y) = {random_x}, {random_y}")
         print(f"Alpha value = {random_alpha}")
 
+        print(f"background_image : {self.background_image.shape}")
+        print(f"insertion_mask : {self.insertion_mask.shape}")
+        print(f"object_img: {self.object_img.shape}")
+        print(f"object_mask: {self.object_mask.shape}")
+
         # get insert result of text_box_image, text_box_mask at (x,y). same size as background image
         text_box_image, text_box_mask = self.get_inserted_object_and_mask(random_x, random_y, visualize)
+
+        print(f"text_box_image: {text_box_image.shape}")
+        print(f"text_box_mask: {text_box_mask.shape}")
+
         # get text_box_image, text_box_mask only part that intersect with background insertion_mask
         intersect_object_img, intersect_object_mask = self.intersect_insert_region(insert_region=self.insertion_mask,
                                                                                     object_img=text_box_image, 
                                                                                     object_mask=text_box_mask, 
                                                                                     visualize=visualize)
         # apply alpha blending - get the result image
-        blended = self.alpha_blend(foreground=intersect_object_img.copy(), 
-                                    background=self.background_image.copy(), 
-                                    alpha_mask=intersect_object_mask.copy(), 
+        blended = self.alpha_blend(foreground=intersect_object_img, 
+                                    background=self.background_image, 
+                                    alpha_mask=intersect_object_mask, 
                                     transparency=random_alpha,
                                     visualize=visualize)
+        
+        # plot
+        if visualize:
+            self.plot_images['result_image'] = blended
+            self.plot_all_steps()
+
         return blended
 
 
@@ -72,13 +92,10 @@ class Insertion:
         mask_boolean = mask[:,:,0] == 255 # white
         mask_rgb_boolean = np.stack([mask_boolean, mask_boolean, mask_boolean], axis=2)
 
-
-        print(f"object_img: {object_img.shape}")
-        print(f"object_mask: {object_mask.shape}")
         print(f"mask: {mask.shape}")
         print(f"mask_boolean: {mask_boolean.shape}")
         print(f"mask_rgb_boolean: {mask_rgb_boolean.shape}")
-        print(f"background_image : {background.shape}")
+
         # Add image for the visible part of object image
         if x >= 0 and y >= 0:
             h_part = h - max(0, y + h - h_bg) # h_part - part of the image which overlaps background along y-axis
@@ -138,7 +155,9 @@ class Insertion:
 
         # plot
         if visualize:
-            self.plot_inserted_object_and_mask(self.background_image, self.object_img, self.object_mask, bg_rgb_mask, bg_mask, x, y)
+            self.plot_images['bg_mask'] = bg_mask
+            self.plot_images['bg_rgb_mask'] = bg_rgb_mask
+            # self.plot_inserted_object_and_mask(self.background_image, self.object_img, self.object_mask, bg_rgb_mask, bg_mask, x, y)
         return bg_rgb_mask, bg_mask
     
 
@@ -169,7 +188,9 @@ class Insertion:
         intersect_object_mask = intersect_object_mask * 255 # this is [0,255] now
 
         if visualize:
-            self.plot_intersect(intersect_object_img, intersect_object_mask)
+            self.plot_images['intersect_object_img'] = intersect_object_img
+            self.plot_images['intersect_object_mask'] = intersect_object_mask
+            # self.plot_intersect(intersect_object_img, intersect_object_mask)
         return intersect_object_img, intersect_object_mask
     
 
@@ -202,13 +223,37 @@ class Insertion:
         blended = blended.astype(np.uint8) # !!
 
         if visualize:
-            self.plot_alpha_blending(foreground, background)
-        
+            self.plot_images['foreground'] = foreground
+            self.plot_images['background'] = background
+            # self.plot_alpha_blending(foreground, background)
         return blended
     
 
     # ----- for visualization ------
-    def plot_inserted_object_and_mask(background_image, object_img, object_mask, bg_rgb_mask, bg_mask, x, y):
+    def plot_all_steps(self):
+        num_images = len(self.plot_images)
+        num_rows = 4
+        num_cols = 3
+
+        positions = [1,4,7,10, 2,5,8,11, 3,6,9,12]
+        fig = plt.figure(figsize=(10, 18))
+
+        for i, (title, img) in enumerate(self.plot_images.items()):
+            position_index = positions[i]
+            ax = fig.add_subplot(num_rows, num_cols, position_index)
+            if len(img.shape) == 2:
+                ax.imshow(img, cmap='gray')
+            else:  # 3d
+                ax.imshow(img)
+            ax.set_title(title)
+            ax.axis('off')
+
+        plt.tight_layout()
+        # plt.subplots_adjust(hspace=0.5, wspace=0.5)  # Adjust space between plots
+        plt.show()
+
+
+    def plot_inserted_object_and_mask(self, background_image, object_img, object_mask, bg_rgb_mask, bg_mask, x, y):
         plt.imshow(background_image)
         plt.title(f"Background Image (3d)")
 
@@ -230,7 +275,7 @@ class Insertion:
         plt.show()
 
 
-    def plot_intersect(intersect_object_img, intersect_object_mask):
+    def plot_intersect(self, intersect_object_img, intersect_object_mask):
         plt.imshow(intersect_object_img)
         plt.title(f"intersect_object_img")
         plt.show()
@@ -239,7 +284,7 @@ class Insertion:
         plt.show()
 
 
-    def plot_alpha_blending(foreground, background):
+    def plot_alpha_blending(self, foreground, background):
         plt.imshow(foreground.astype(np.uint8))
         plt.title("Foreground with Alpha")
         plt.show()

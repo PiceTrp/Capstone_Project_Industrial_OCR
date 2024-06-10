@@ -14,13 +14,13 @@ def get_proper_font_size(font_path):
     Applicable for mask size of 256 only, we create bigger mask my cv2.INTER_NEAREST
     """
     if "DarkerGrotesque" in font_path:
-        return 256
+        return 272
     elif "Raleway" in font_path:
-        return 244
+        return 256 # 244
     elif "RedHatMono" in font_path or "SometypeMono" in font_path:
-        return 244
+        return 256 # 244
     elif "Unison" in font_path:
-        return 200
+        return 224 # 200
     else:
         return 200
 
