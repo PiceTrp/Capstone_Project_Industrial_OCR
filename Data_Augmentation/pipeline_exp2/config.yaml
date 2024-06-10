@@ -17,5 +17,9 @@ fake_image_dir: "gen_characters/fake_images" # Directory for fake images - maske
 mask_image_dir: "gen_characters/mask_images" # Directory for mask images - binary mask
 background_dir: "resources/background_images"
 
+output_dir: "output" # save dir of final augmented result image
+output_image_dir: "output/images"
+output_bbox_dir: "output/annotations"
+
 
 

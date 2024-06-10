@@ -21,7 +21,7 @@ class Insertion:
         self.transform_effect = A.Compose([
             A.Rotate(limit=2, p=0.2), # Rotate between -2 and 2 degrees
             A.Blur(blur_limit=5, p=0.2), # blur_limit = kernel = [3, blur_limit]
-            A.GaussNoise(var_limit=(10.0, 50.0), per_channel=False, p=0.2), # per_channel=False = The same noise value on all channels > R, G, B value
+            A.GaussNoise(var_limit=(10.0, 50.0), per_channel=False, p=0.1), # per_channel=False = The same noise value on all channels > R, G, B value
         ])
 
         # for plot
@@ -31,7 +31,7 @@ class Insertion:
                             "text_box_bw_mask": self.object_mask}
 
 
-    def implement_insertion(self, visualize=False, verbose=False):
+    def implement_insertion(self, visualize=False, verbose=False, save_plot_path=None):
         random_x, random_y = self.get_random_coordinate()
         random_alpha = self.get_random_alpha_value()
 
@@ -63,14 +63,16 @@ class Insertion:
                                     visualize=visualize)
         
         # transform some blur or noise for smooth blending
-        result_image = self.get_transform_result(blended)
+        result_image = self.get_transform_result(blended) # 3d
+        result_mask = intersect_object_mask.copy() # 2d
+
+        self.plot_images['result_image'] = result_image
         
         # plot
-        if visualize:
-            self.plot_images['result_image'] = result_image
-            self.plot_all_steps()
+        if visualize and save_plot_path:
+            self.plot_all_steps(save_path=save_plot_path)
 
-        return result_image
+        return result_image, result_mask
 
 
     # !!!! This function can have error if text box size is larger than background size !!!!
@@ -258,26 +260,30 @@ class Insertion:
     
 
     # ----- for visualization ------
-    def plot_all_steps(self):
+    def plot_all_steps(self, save_path=None):
         num_images = len(self.plot_images)
         num_rows = 4
         num_cols = 3
 
-        positions = [1,4,7,10, 2,5,8,11, 3,6,9,12]
-        fig = plt.figure(figsize=(10, 18))
+        positions = [1, 4, 7, 10, 2, 5, 8, 11, 3, 6, 9, 12]
+        plt.figure(figsize=(10, 8))
 
         for i, (title, img) in enumerate(self.plot_images.items()):
+            print(i)
             position_index = positions[i]
-            ax = fig.add_subplot(num_rows, num_cols, position_index)
+            plt.subplot(num_rows, num_cols, position_index)
             if len(img.shape) == 2:
-                ax.imshow(img, cmap='gray')
+                plt.imshow(img, cmap='gray')
             else:  # 3d
-                ax.imshow(img)
-            ax.set_title(title)
-            ax.axis('off')
+                plt.imshow(img)
+            plt.title(title)
+            plt.axis('off')
 
         plt.tight_layout()
-        # plt.subplots_adjust(hspace=0.5, wspace=0.5)  # Adjust space between plots
+        
+        if save_path:
+            plt.savefig(save_path, dpi=300)  # Save the figure with high quality
+        
         plt.show()
 
 

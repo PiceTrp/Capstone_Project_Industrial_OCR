@@ -59,4 +59,5 @@ __pycache__
 *.log
 *.tmp
 *.png
+*.json
 *.jpg
