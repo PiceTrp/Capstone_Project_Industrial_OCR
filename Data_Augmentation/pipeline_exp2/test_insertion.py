@@ -38,6 +38,9 @@ def main():
     text_box_processor = TextBoxProcessor(augmented_characters, char_padding=30)
     overlay_value = 20
 
+    print(f"Backgrond Insertion mask shape: {background_processor.insertion_mask.shape}")
+    print(f"Backgrond Insertion mask shape: {background_processor.insertion_mask.shape}")
+
     # test insertion
     insertion_processor = Insertion(background_processor, text_box_processor, overlay_value)
     result_image = insertion_processor.implement_insertion(visualize=True)

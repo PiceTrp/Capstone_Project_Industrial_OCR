@@ -77,7 +77,10 @@ class TextBoxProcessor:
             text_box_bw_mask = self.add_obj(text_box_bw_mask, bw_mask, bw_mask, x, y)
             x = x + w + self.char_padding
 
-        return text_box_masked, text_box_bw_mask
+        # Transform text_box_bw_mask back to 2d-array
+        text_box_bw_mask = cv2.cvtColor(text_box_bw_mask, cv2.COLOR_BGR2GRAY)
+
+        return text_box_masked, text_box_bw_mask # 3d & 2d
 
 
 

@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 class Insertion:
     def __init__(self, background_processor, text_box_processor, overlay_value=20):
         # background initiate
-        self.background_image = background_processor.background_image
-        self.insertion_mask = background_processor.insertion_mask
+        self.background_image = background_processor.background_image.copy()
+        self.insertion_mask = background_processor.insertion_mask.copy()
         self.placable_topleft, self.placable_bottomright = background_processor.placable_topleft, background_processor.placable_bottomright
         # text box initiate
-        self.object_img = text_box_processor.text_box_masked
-        self.object_mask = text_box_processor.text_box_bw_mask
+        self.object_img = text_box_processor.text_box_masked.copy()
+        self.object_mask = text_box_processor.text_box_bw_mask.copy()
         self.overlay_value = overlay_value
 
 
@@ -72,6 +72,12 @@ class Insertion:
         mask_boolean = mask[:,:,0] == 255 # white
         mask_rgb_boolean = np.stack([mask_boolean, mask_boolean, mask_boolean], axis=2)
 
+
+        print(f"object_img: {object_img.shape}")
+        print(f"object_mask: {object_mask.shape}")
+        print(f"mask: {mask.shape}")
+        print(f"mask_boolean: {mask_boolean.shape}")
+        print(f"mask_rgb_boolean: {mask_rgb_boolean.shape}")
         print(f"background_image : {background.shape}")
         # Add image for the visible part of object image
         if x >= 0 and y >= 0:
@@ -122,6 +128,9 @@ class Insertion:
         # set-up inputs
         bg_mask = np.zeros(self.background_image.shape[:2])
         bg_rgb_mask = np.zeros(self.background_image.shape, dtype=np.uint8) # don't forget dtype
+
+        print(f"bg_mask: {bg_mask.shape}")
+        print(f"bg_rgb_mask: {bg_rgb_mask.shape}")
 
         # Place image for the visible part of object image
         self._place_object(bg_mask, self.object_img, self.object_mask, x, y) # for 2d mask - inserted_mask
@@ -238,3 +247,19 @@ class Insertion:
         plt.imshow(background.astype(np.uint8))
         plt.title("Background with Inverted Alpha")
         plt.show()
+
+
+
+# some of error case
+
+# Random selected coordinates (x,y) = (1189,235)
+# (x,y) = 1189, 235
+# Alpha value = 0.31906960768907017
+# bg_mask: (506, 2049)
+# bg_rgb_mask: (506, 2049, 3)
+# object_img: (212, 849, 3)
+# object_mask: (212, 849, 3)
+# mask: (212, 849, 3, 3)
+# mask_boolean: (212, 849, 3)
+# mask_rgb_boolean: (212, 849, 3, 3)
+# background_image : (506, 2049)
