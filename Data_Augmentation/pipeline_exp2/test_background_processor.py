@@ -38,6 +38,10 @@ def main():
     background_image = background_processor.background_image
     insertion_mask = background_processor.insertion_mask
 
+    print(f"backgroun_image: {background_image.shape}")
+    print(f"insertion_mask: {insertion_mask.shape}")
+    print(np.unique(insertion_mask))
+
     # get top-left & bottom-right of mask insertion area
     placable_topleft, placable_bottomright = background_processor.placable_topleft, background_processor.placable_bottomright
     print(placable_topleft, placable_bottomright)

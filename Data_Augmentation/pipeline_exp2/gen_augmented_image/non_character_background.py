@@ -132,6 +132,10 @@ class NonCharacterBackgroundProcessor:
         # then augment color value - brightness contrast blur noise - for only background image, don't involved mask
         transformed_2 = self.transform_effect(image=transformed_image)
         transformed_image_2 = transformed_2['image']
+
+        # ensure mask is only 0 and 255
+        transformed_mask[transformed_mask > 0] = 255
+
         return transformed_image_2, transformed_mask # final background_image & insertion_mask
     
 
