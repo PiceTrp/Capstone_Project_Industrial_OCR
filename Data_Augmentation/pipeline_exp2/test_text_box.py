@@ -49,9 +49,12 @@ def main():
         augmented_characters.append(augmented_character)
 
     #Create text box
-    text_box_processor = TextBoxProcessor(augmented_characters, char_padding=120)
+    text_box_processor = TextBoxProcessor(augmented_characters)
     text_box_masked, text_box_bw_mask = text_box_processor.text_box_masked, text_box_processor.text_box_bw_mask
 
+    print(f"text_box_masked: {text_box_masked.shape}")
+    print(f"text_box_bw_mask: {text_box_bw_mask.shape}")
+    print(f"values in text_box_bw_mask: {np.unique(text_box_bw_mask)}")
     # tempolary
     # print(os.getcwd())
     # print(config['generated_chars_dir'])
