@@ -19,9 +19,6 @@ Error Take Notes
 """
 
 
-
-
-
 def get_random_text():
     first_position = "0123456789"
     second_position = "AHKZP"
@@ -61,17 +58,17 @@ def main():
         # Create text box
         text_box_processor = TextBoxProcessor(augmented_characters)
 
-        # test insertion
-        insertion_processor = Insertion(background_processor, text_box_processor)
-        result_image = insertion_processor.implement_insertion(verbose=True)
+        try:
+            # test insertion
+            insertion_processor = Insertion(background_processor, text_box_processor)
+            result_image = insertion_processor.implement_insertion(verbose=True)
 
-        # plt.figure(figsize=(20,10))
-        # plt.imshow(result_image)
-        # plt.show()
+            # save for checking
+            img_pil = Image.fromarray(result_image.astype(np.uint8))
+            img_pil.save(f"./result_{i}.png", quality=95)
+        except Exception as e:
+            print("An error occurred:", e)
 
-        # save for checking
-        img_pil = Image.fromarray(result_image.astype(np.uint8))
-        img_pil.save(f"./result_{i}.png", quality=95)
 
         # for the end of everything
         shutil.rmtree(config['generated_chars_dir'])
