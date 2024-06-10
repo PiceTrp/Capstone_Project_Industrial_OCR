@@ -1,11 +1,18 @@
 import cv2
 import numpy as np
+import random
+
+random.seed(42)
 
 class TextBoxProcessor:
-    def __init__(self, augmented_characters, char_padding):
+    def __init__(self, augmented_characters):
         self.augmented_characters = augmented_characters
-        self.char_padding = char_padding
+        self.char_padding = self.get_random_char_padding()
         self.text_box_masked, self.text_box_bw_mask = self.create_text_box()
+
+    
+    def get_random_char_padding(self):
+        return random.choice([80, 90, 100, 110, 120])
 
     def get_text_box_size(self):
         """

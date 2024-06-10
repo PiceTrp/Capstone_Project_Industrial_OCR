@@ -12,15 +12,16 @@ def get_random_font(fonts_dir):
 def get_proper_font_size(font_path):
     """
     Applicable for mask size of 256 only, we create bigger mask my cv2.INTER_NEAREST
+    !!! Do not change the size, cause it affects the generated result !!!
     """
     if "DarkerGrotesque" in font_path:
-        return 272
+        return 256
     elif "Raleway" in font_path:
-        return 256 # 244
+        return 244
     elif "RedHatMono" in font_path or "SometypeMono" in font_path:
-        return 256 # 244
+        return 244
     elif "Unison" in font_path:
-        return 224 # 200
+        return 200
     else:
         return 200
 

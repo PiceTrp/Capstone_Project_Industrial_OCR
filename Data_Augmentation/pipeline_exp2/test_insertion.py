@@ -57,9 +57,9 @@ def main():
 
         # Create an instance of the NonCharacterBackground class
         background_processor = NonCharacterBackgroundProcessor(background_images[2])
-        
+
         # Create text box
-        text_box_processor = TextBoxProcessor(augmented_characters, char_padding=120)
+        text_box_processor = TextBoxProcessor(augmented_characters)
 
         # test insertion
         insertion_processor = Insertion(background_processor, text_box_processor)
