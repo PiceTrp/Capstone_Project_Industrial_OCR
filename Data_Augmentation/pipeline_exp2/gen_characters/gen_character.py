@@ -22,6 +22,8 @@ def get_character_masks(text, config):
     # randonly select a model checkpoint
     exp_name = get_random_model_checkpoints(config['exp_names'])
 
+    print(f"font: {font}, mask_size: {mask_size}, model: {exp_name}")
+
     # run the test script to get stylized result images
     run_test_script(config, exp_name, mask_size, len(characters))
 

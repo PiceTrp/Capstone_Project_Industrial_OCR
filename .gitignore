@@ -20,7 +20,7 @@ Create_Character_Mask/tools/synthtiger/*
 
 Datasets/*
 Text_Detection/*
-Text_Recognition/*
+Text_Recognition/TrOCR/trocr_env/*
 
 
 
@@ -61,3 +61,4 @@ __pycache__
 *.png
 *.json
 *.jpg
+*.html

@@ -53,53 +53,79 @@ def main():
 
     # Augmentation start...
     for i in tqdm(range(4000)):
-        # >>> Character Creation <<<
-        text = get_random_text()
-        print(f"create text... {text}")
-        get_character_masks(text, config)
+        if i > 2863:
+            # >>> Character Creation <<<
+            text = get_random_text()
+            print(f"create text... {text}")
+            get_character_masks(text, config)
 
-        # >>> Insertion Implementation <<<
-        fake_image_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*fake*")))
-        mask_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*real*")))
-        background_images = sorted(glob(os.path.join(config['background_dir'], "*.png")))
+            # >>> Insertion Implementation <<<
+            fake_image_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*fake*")))
+            mask_paths = sorted(glob(os.path.join(config['generated_chars_image_dir'], "*real*")))
+            background_images = sorted(glob(os.path.join(config['background_dir'], "*.png")))
 
-        augmented_characters = []
-        for fake_image_path, mask_path in tqdm(zip(fake_image_paths, mask_paths)):
-            processor = AugmentedCharacterProcessor(fake_image_path, mask_path)
-            augmented_character = processor.get_augmented_character()
-            augmented_characters.append(augmented_character)
+            augmented_characters = []
+            for fake_image_path, mask_path in tqdm(zip(fake_image_paths, mask_paths)):
+                processor = AugmentedCharacterProcessor(fake_image_path, mask_path)
+                augmented_character = processor.get_augmented_character()
+                augmented_characters.append(augmented_character)
 
-        # Create an instance of the NonCharacterBackground class
-        background_processor = NonCharacterBackgroundProcessor(background_images[random.randint(0,len(background_images)-1)])
+            # Create an instance of the NonCharacterBackground class
+            background_processor = NonCharacterBackgroundProcessor(background_images[random.randint(0,len(background_images)-1)])
 
-        # Create text box
-        text_box_processor = TextBoxProcessor(augmented_characters)
+            # Create text box
+            text_box_processor = TextBoxProcessor(augmented_characters)
 
-        try:
-            # test insertion
-            insertion_processor = Insertion(background_processor, text_box_processor)
-            result_image, result_mask = insertion_processor.implement_insertion(verbose=True)
+            try:
+                # test insertion
+                insertion_processor = Insertion(background_processor, text_box_processor)
+                result_image, result_mask = insertion_processor.implement_insertion(verbose=True)
 
-            # save result image
-            img_pil = Image.fromarray(result_image)
-            img_pil.save(os.path.join(config["output_image_dir"], f"image_{i}.jpg"), quality=95)
-            print("save image...")
+                # save result image
+                img_pil = Image.fromarray(result_image)
+                img_pil.save(os.path.join(config["output_image_dir"], f"image_{i}.jpg"), quality=95)
+                print("save image...")
 
-            mask_pil = Image.fromarray(result_mask)
-            mask_pil.save(os.path.join(config["output_mask_dir"], f"mask_{i}.jpg"), quality=95)
-            print("save mask...")
+                mask_pil = Image.fromarray(result_mask)
+                mask_pil.save(os.path.join(config["output_mask_dir"], f"mask_{i}.jpg"), quality=95)
+                print("save mask...")
 
-            # save annotation
-            bbox_processor = BoundingBoxProcessor(result_mask)
-            bbox_processor.save_bounding_boxes_to_json(output_path=os.path.join(config["output_bbox_dir"], f"image_{i}.json"),
-                                                    text_value=text)
-            print("save annotation...")
-        except Exception as e:
-            print("An error occurred:", e)
+                # save annotation
+                bbox_processor = BoundingBoxProcessor(result_mask)
+                bbox_processor.save_bounding_boxes_to_json(output_path=os.path.join(config["output_bbox_dir"], f"image_{i}.json"),
+                                                        text_value=text)
+                print("save annotation...")
+            except Exception as e:
+                print("An error occurred:", e)
 
-        # for the end of everything
-        shutil.rmtree(config['generated_chars_dir'])
+            try:
+                # for the end of everything
+                shutil.rmtree(config['generated_chars_dir'])
+                print("remove ['generated_chars_dir'] successfully")
+            except PermissionError as e:
+                print(f"PermissionError: {e}")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        else:
+            text = get_random_text()
+            print(f"just skip: {i}, {text}")
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    import json
+    import os
+
+    # Define the structure
+    template = {"bounding_boxes": [], "text": ""}
+
+    # Create a directory to store the JSON files
+    output_dir = "../../Text_Recognition/TrOCR/augmented_dataset/val/annotations"
+
+    # Generate 24 JSON files
+    for i in range(1, 25):
+        filename = os.path.join(output_dir, f'file_{i}.json')
+        with open(filename, 'w') as f:
+            json.dump(template, f, indent=4)
+
+    print(f"Generated 24 JSON files in the directory '{output_dir}'.")
