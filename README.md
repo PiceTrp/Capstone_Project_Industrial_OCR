@@ -27,20 +27,11 @@ This project focuses on improving the readability of laser-etched serial numbers
 
 ## 📊 **Presentation Slides**
 
-| Slide Topic                    | Link             |
-| ------------------------------ | ---------------- |
-| 📌 Project Introduction        | [View Slides](#) |
-| 🔍 Challenges & Solutions      | [View Slides](#) |
-| 🏗️ Data Augmentation Pipeline  | [View Slides](#) |
-| 🤖 Model Fine-Tuning & Results | [View Slides](#) |
-
----
-
-## 🎥 **Project Demonstration**
-
-Here’s a quick overview of our **automated serial number inspection** system:
-
-![Project Overview](images/project_demo.gif)
+| Slide Topic                                | Link             |
+| ------------------------------------------ | ---------------- |
+| 📌 **Project Introduction**                | [View Slides](https://www.canva.com/design/DAF21UBR9a0/imwyMfhnAsQnTLFoKYUdrg/edit?utm_content=DAF21UBR9a0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) |
+| 🧹 **EXP1: Background Removal with GAN** | [View Slides](https://www.canva.com/design/DAGEPaQqK08/1_lwpglMRT54wLdqgU6XSQ/edit?utm_content=DAGEPaQqK08&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) |
+| 🔧 **EXP2: Data Augmentation Pipeline [Final] **          | [View Slides](https://www.canva.com/design/DAGHiVbE5fU/44alzzZg0DigmazypUw7yA/edit?utm_content=DAGHiVbE5fU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) |
 
 ---
 
