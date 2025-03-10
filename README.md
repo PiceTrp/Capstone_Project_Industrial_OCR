@@ -19,7 +19,7 @@ This project is my **4th-year capstone project** in **Computer Science** at **Ki
 
 | Challenges                                                        | Solutions                                                                                                                               |
 | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| **Hard-to-read, Low contrast, contamination**                     | - Used **industrial cameras** to enhance readability. <br> - Developed a **robust text recognition model** to improve reading accuracy. |
+| **Hard-to-read, Low contrast, contamination**                     | Used **industrial cameras** to enhance readability. <br> Developed a **robust text recognition model** to improve reading accuracy. |
 | **Limited dataset (<200 samples)**                                | Developed a **data augmentation pipeline** using **image processing + GANs** to generate high-fidelity synthetic samples.               |
 | **Ineffective fine-tuning with small datasets** | Leveraged synthetic data to improve model generalization**.                                                 |
 
@@ -31,7 +31,7 @@ This project is my **4th-year capstone project** in **Computer Science** at **Ki
 | ------------------------------------------ | ---------------- |
 | 📌 **Project Introduction**                | [View Slides](https://www.canva.com/design/DAF21UBR9a0/imwyMfhnAsQnTLFoKYUdrg/edit?utm_content=DAF21UBR9a0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) |
 | 🧹 **EXP1: Background Removal with GAN** | [View Slides](https://www.canva.com/design/DAGEPaQqK08/1_lwpglMRT54wLdqgU6XSQ/edit?utm_content=DAGEPaQqK08&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) |
-| 🔧 **EXP2: Data Augmentation Pipeline [Final] **          | [View Slides](https://www.canva.com/design/DAGHiVbE5fU/44alzzZg0DigmazypUw7yA/edit?utm_content=DAGHiVbE5fU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) |
+| 🔧 **EXP2: Data Augmentation Pipeline [Final]**          | [View Slides](https://www.canva.com/design/DAGHiVbE5fU/44alzzZg0DigmazypUw7yA/edit?utm_content=DAGHiVbE5fU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) |
 
 ---
 
