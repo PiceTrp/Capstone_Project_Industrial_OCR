@@ -1,26 +1,25 @@
-# Capstone_Project_Industrial_OCR
-
 # Automated Inspection of Laser-Etched Serial Numbers on Copper Surfaces Using Deep Learning Techniques  
 
 ## 📝 Overview  
-This project focuses on improving the readability of laser-etched serial numbers on **contaminated copper surfaces** using **deep learning techniques**. The challenge arises due to:  
-- **Low contrast and contamination**, making serial numbers difficult to read.  
-- **Limited dataset (<200 samples)**, restricting fine-tuning performance.  
-
-To overcome these issues, we:  
-1. **Enhanced image readability** using **industrial cameras**.  
-2. Developed a **data augmentation pipeline** leveraging **image processing** and **Generative Adversarial Networks (GANs)** to synthetically expand the dataset.  
-3. Fine-tuned the **TrOCR text recognition model**, achieving an **average accuracy of 0.89**.  
+This project focuses on improving the readability of laser-etched serial numbers on **contaminated copper surfaces** using **deep learning techniques**. The project is my **4th-year capstone project** in **Computer Science** at **King Mongkut’s University of Technology Thonburi (KMUTT)**. The project showcases my **research and development skills** in the filed of **computer vision*.
 
 ---
 
-## 🎯 Pain Points & Objectives  
+## 🎯 Pain Points  
 
-| Pain Points | Solutions |
+- **Low contrast and contamination**, making serial numbers difficult to read.  
+- **Limited dataset (<200 samples)**, restricting fine-tuning performance.  
+
+---
+
+## 🎯 Objectives  
+
+| Challenges | Solutions |
 |------------|----------|
-| **Hard-to-read serial numbers on metal surfaces due to contamination** | Used **industrial cameras** to enhance readability. |
+| **Hard-to-read, Low contrast, contamination** | - Used **industrial cameras** to enhance readability. <br> - Developed a **robust text recognition model** to improve reading accuracy. |
 | **Limited dataset (<200 samples)** | Developed a **data augmentation pipeline** using **image processing + GANs** to generate high-fidelity synthetic samples. |
 | **Fine-tuning TrOCR with a small dataset might not be effective** | Leveraged synthetic data to improve model generalization, leading to **0.89 accuracy**. |
+
 
 ---
 
