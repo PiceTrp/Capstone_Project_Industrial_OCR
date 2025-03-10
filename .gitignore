@@ -1,4 +1,5 @@
 # Exclude specific folders
+.DS_Store
 Background_Removal/pytorch-CycleGAN-and-pix2pix/checkpoints/*
 Background_Removal/pytorch-CycleGAN-and-pix2pix/datasets/*
 Background_Removal/pytorch-CycleGAN-and-pix2pix/plots/*
